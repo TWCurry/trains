@@ -25,3 +25,16 @@ body{
     border-radius: 5px;
     /* background-color: black; */
 }
+#loading{
+    display: block;
+    color: white;
+    position: relative;
+    margin: auto;
+    top: 10em;
+    width: 16em;
+    z-index: 100;
+    text-align: center;
+    background-color: rgb(218, 199, 170);
+    border: 1px solid black;
+    border-radius: 5px;
+}
