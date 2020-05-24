@@ -44,6 +44,11 @@ $(document).ready(function(){
         handleMouseDown(c, e);
     })
 
+    //Handle keyboard
+    document.addEventListener('keydown', function(event) {
+        handleKeyboard(event);
+    });
+
     //Load Images
     loadImages();
 
@@ -78,6 +83,7 @@ function fillToolbox(){
     };
     toolboxHtml += "</tr></table>";
     $("#toolboxWorkspace").html(toolboxHtml);
+    $('#toolbox').hide();
 }
 
 function drawToCanvas(){
@@ -155,5 +161,14 @@ function handleMouseDown(c, e){
     if (toolboxItemSelected == true){
         grid[Math.floor(mouseCoords["x"]/cellSize)][Math.floor(mouseCoords["y"]/cellSize)] = selectedItem;
         // toolboxItemSelected = false;
+    }
+}
+
+function handleKeyboard(event){
+    if(event.keyCode == 27) {
+        toolboxItemSelected = false;
+    }
+    else if(event.keyCode == 84) {
+     toggleToolbox();
     }
 }
