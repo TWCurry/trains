@@ -1,5 +1,5 @@
 //Global vars
-var imageNames=["icon", "horizontal"];
+var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd"];
 var imgs=[];
 
 // Init function
@@ -42,7 +42,7 @@ $(document).ready(function(){
     loadImages();
 
     //Loading complete
-    $("#loading").fadeOut();
+    // $("#loading").fadeOut();
 
     // Begin main loop
     drawGrid();
@@ -54,7 +54,7 @@ function loadImages(){
         var img = new Image();
         imgs.push(img);
         img.onload = function(){}
-        img.src = `img/${imageNames[i]}.png`;
+        img.src = `img/gameAssets/${imageNames[i]}.png`;
     }
     console.log("Image loading");
 }
