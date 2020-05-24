@@ -1,8 +1,11 @@
 //Global vars
-var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd","lu", "ld", "ru", "rd"];
+var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd", "grass", "path", "house1"];
 var imgs=[];
 var toolboxShowing = false;
 var toolboxItemSize = 50;
+var selectedItem = "";
+var toolboxItemSelected = false;
+var mouseCoords = {};
 
 // Init function
 $(document).ready(function(){
@@ -25,20 +28,21 @@ $(document).ready(function(){
     // Reset grid to correct size
     grid = twoDimensionalArray(gridWidth, gridHeight);
 
-    // Fill grid with test data
+    // Fill grid grass
     for (var y=0; y<gridHeight-1; y++) {
         for (var x=0; x<gridWidth-1; x++) {
-            if (x%2==0){
-            grid[x][y] = 0;
-            }else{
-                grid[x][y] = 1;
-            }
+            grid[x][y] = "grass";
         }
     }
-    // Add event listener for mouse click
-    // c.addEventListener('mousedown', function(e) {
-    //     handleMouseDown(c, e);
-    // })
+    // Add event listeners for mouse stuff
+    c.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(c, evt);
+        mouseCoords = mousePos;
+      }, false);
+
+    c.addEventListener('mousedown', function(e) {
+        handleMouseDown(c, e);
+    })
 
     //Load Images
     loadImages();
@@ -49,7 +53,7 @@ $(document).ready(function(){
     $("#loading").fadeOut();
 
     // Begin main loop
-    drawGrid();
+    drawToCanvas();
 });
 
 //Function to load images into memory
@@ -66,18 +70,17 @@ function loadImages(){
 function fillToolbox(){
     toolboxHtml = "<table id=\"toolboxTable\"><tr>";
     toolboxWidth = Math.floor($("#toolboxWorkspace").width()/toolboxItemSize);
-    console.log(toolboxWidth);
     for (var i=0; i<imageNames.length; i++){
         if (i % toolboxWidth == 0){
             toolboxHtml += "</tr><tr>";
         }
-        toolboxHtml += `<td><img src="img/gameAssets/${imageNames[i]}.png" height=${toolboxItemSize} width=${toolboxItemSize}></td>`;
+        toolboxHtml += `<td><input type="image" src="img/gameAssets/${imageNames[i]}.png" height=${toolboxItemSize} width=${toolboxItemSize} onclick="selectObject('${imageNames[i]}')"></td>`;
     };
     toolboxHtml += "</tr></table>";
     $("#toolboxWorkspace").html(toolboxHtml);
 }
 
-function drawGrid(){
+function drawToCanvas(){
     // Create context
     var c = document.getElementById("mainCanvas");
     var ctx = c.getContext("2d");
@@ -92,17 +95,19 @@ function drawGrid(){
     // Draw grid
     for (var y=0; y<gridHeight-1; y++) {
         for (var x=0; x<gridWidth-1; x++) {
-            if (grid[x][y] == 0){
-                ctx.drawImage(imgs[0], x*cellSize, y*cellSize, cellSize, cellSize);
-            }else{
-                ctx.drawImage(imgs[1], x*cellSize, y*cellSize, cellSize, cellSize);
-            }
-            
+            var imageIndex = imageNames.findIndex(i => i === grid[x][y]);
+            ctx.drawImage(imgs[imageIndex], x*cellSize, y*cellSize, cellSize, cellSize);
         }
     }
 
+    //Draw toolbox object
+    if (toolboxItemSelected == true){
+        var imageIndex = imageNames.findIndex(i => i === selectedItem);
+        ctx.drawImage(imgs[imageIndex], mouseCoords["x"]-(cellSize/2), mouseCoords["y"]-(cellSize/2), cellSize, cellSize);
+    }
+
     // Create animation loop
-    window.requestAnimationFrame(drawGrid);
+    window.requestAnimationFrame(drawToCanvas);
 }
 
 // Function to create 2d Array
@@ -121,12 +126,34 @@ function twoDimensionalArray(rows, columns) {
     return arr;
   }
 
-  function toggleToolbox(){
-      if (toolboxShowing==true){
-          $("#toolbox").fadeOut(200);
-          toolboxShowing = false;
-      }else{
+function toggleToolbox(){
+    if (toolboxShowing==true){
+        $("#toolbox").fadeOut(200);
+        toolboxShowing = false;
+    }else{
         $("#toolbox").fadeIn(200);
         toolboxShowing = true;
-      }
-  }
+    }
+}
+
+function selectObject(item){
+    selectedItem = item;
+    $("#toolbox").hide();
+    toolboxShowing = false;
+    toolboxItemSelected = true;
+}
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+function handleMouseDown(c, e){
+    if (toolboxItemSelected == true){
+        grid[Math.floor(mouseCoords["x"]/cellSize)][Math.floor(mouseCoords["y"]/cellSize)] = selectedItem;
+        // toolboxItemSelected = false;
+    }
+}
