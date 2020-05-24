@@ -1,6 +1,8 @@
 //Global vars
-var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd", "grass", "path", "house1"];
-var imgs=[];
+var bgImageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd", "grass", "path", "house1"];
+var backgroundImgs=[];
+var rsImageNames=["loco-l", "loco-r"];
+var rsImgs=[];
 var toolboxShowing = false;
 var toolboxItemSize = 50;
 var selectedItem = "";
@@ -63,23 +65,32 @@ $(document).ready(function(){
 
 //Function to load images into memory
 function loadImages(){
-    for (var i=0; i<imageNames.length; i++){
+    // Load background images
+    for (var i=0; i<bgImageNames.length; i++){
         var img = new Image();
-        imgs.push(img);
+        backgroundImgs.push(img);
         img.onload = function(){}
-        img.src = `img/gameAssets/${imageNames[i]}.png`;
+        img.src = `img/gameAssets/background-tiles/${bgImageNames[i]}.png`;
     }
+    // Load rolling stock images
+    for (var i=0; i<rsImageNames.length; i++){
+        var img = new Image();
+        rsImgs.push(img);
+        img.onload = function(){}
+        img.src = `img/gameAssets/rolling-stock/${rsImageNames[i]}.png`;
+    }
+
     console.log("Image loading complete.");
 }
 
 function fillToolbox(){
     toolboxHtml = "<table id=\"toolboxTable\"><tr>";
     toolboxWidth = Math.floor($("#toolboxWorkspace").width()/toolboxItemSize);
-    for (var i=0; i<imageNames.length; i++){
+    for (var i=0; i<bgImageNames.length; i++){
         if (i % toolboxWidth == 0){
             toolboxHtml += "</tr><tr>";
         }
-        toolboxHtml += `<td><input type="image" src="img/gameAssets/${imageNames[i]}.png" height=${toolboxItemSize} width=${toolboxItemSize} onclick="selectObject('${imageNames[i]}')"></td>`;
+        toolboxHtml += `<td><input type="image" src="img/gameAssets/background-tiles/${bgImageNames[i]}.png" height=${toolboxItemSize} width=${toolboxItemSize} onclick="selectObject('${bgImageNames[i]}')"></td>`;
     };
     toolboxHtml += "</tr></table>";
     $("#toolboxWorkspace").html(toolboxHtml);
@@ -101,17 +112,18 @@ function drawToCanvas(){
     // Draw grid
     for (var y=0; y<gridHeight-1; y++) {
         for (var x=0; x<gridWidth-1; x++) {
-            var imageIndex = imageNames.findIndex(i => i === grid[x][y]);
-            ctx.drawImage(imgs[imageIndex], x*cellSize, y*cellSize, cellSize, cellSize);
+            var imageIndex = bgImageNames.findIndex(i => i === grid[x][y]);
+            ctx.drawImage(backgroundImgs[imageIndex], x*cellSize, y*cellSize, cellSize, cellSize);
         }
     }
 
     //Draw toolbox object
     if (toolboxItemSelected == true){
-        var imageIndex = imageNames.findIndex(i => i === selectedItem);
-        ctx.drawImage(imgs[imageIndex], mouseCoords["x"]-(cellSize/2), mouseCoords["y"]-(cellSize/2), cellSize, cellSize);
+        var imageIndex = bgImageNames.findIndex(i => i === selectedItem);
+        ctx.drawImage(backgroundImgs[imageIndex], mouseCoords["x"]-(cellSize/2), mouseCoords["y"]-(cellSize/2), cellSize, cellSize);
     }
-
+    ctx.drawImage(rsImgs[0], 3*cellSize, 3*cellSize, cellSize, cellSize);
+    ctx.drawImage(rsImgs[1], 2*cellSize, 3*cellSize, cellSize, cellSize);
     // Create animation loop
     window.requestAnimationFrame(drawToCanvas);
 }
