@@ -11,7 +11,16 @@
         <div id="title">
             <h1>🚂 Trains 🚂</h1>
         </div>
+        <!-- Main game canvas -->
         <canvas id="mainCanvas"></canvas>
+        <!-- Loading display -->
         <div id="loading"><br>Loading...<br><img src="img/loader.gif"></div>
+        <!-- Toolbox -->
+        <input type="image" id="btnToolbox" src="img/toolbox.png" onclick="toggleToolbox()"/>
+        <div id="toolbox">
+            <h3><u>Toolbox</u></h3>
+            <button id="btnCloseToolbox" onclick="toggleToolbox()">X</button>
+            <div id="toolboxWorkspace"></div>
+        </div>
     </body>
 </html>

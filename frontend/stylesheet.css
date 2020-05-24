@@ -38,3 +38,45 @@ body{
     border: 1px solid black;
     border-radius: 5px;
 }
+#toolbox{
+    color: white;
+    position: relative;
+    margin: auto;
+    top: 5em;
+    width: 30em;
+    height: 25em;
+    z-index: 100;
+    text-align: center;
+    background-color: rgb(190, 0, 0);
+    border: 2px outset rgb(109, 1, 1);
+}
+#toolboxWorkspace{
+    border: 2px inset rgb(136, 0, 0);
+    display: block;
+    position: relative;
+    margin: auto;
+    width: 90%;
+    height: 80%;
+    background-color: rgb(165, 0, 0);
+}
+#btnToolbox{
+    display: block;
+    position: absolute;
+    top: 3em;
+    left: 3em;
+    height: 45px;
+    width: 45px;
+}
+#btnCloseToolbox{
+    display: block;
+    position: absolute;
+    border: 2px inset rgb(136, 0, 0);
+    top: 1em;
+    right: 1em;
+    font-weight: bold;
+    background-color: white;
+}
+#toolboxTable{
+    display: block;
+    width: 100%;
+}

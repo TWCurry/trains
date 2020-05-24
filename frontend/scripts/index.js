@@ -1,6 +1,8 @@
 //Global vars
-var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd"];
+var imageNames=["horizontal", "vertical", "lu", "ld", "ru", "rd","lu", "ld", "ru", "rd"];
 var imgs=[];
+var toolboxShowing = false;
+var toolboxItemSize = 50;
 
 // Init function
 $(document).ready(function(){
@@ -41,8 +43,10 @@ $(document).ready(function(){
     //Load Images
     loadImages();
 
+    fillToolbox();
+
     //Loading complete
-    // $("#loading").fadeOut();
+    $("#loading").fadeOut();
 
     // Begin main loop
     drawGrid();
@@ -50,13 +54,27 @@ $(document).ready(function(){
 
 //Function to load images into memory
 function loadImages(){
-    for (var i=0; i<imageNames.length; i++) {
+    for (var i=0; i<imageNames.length; i++){
         var img = new Image();
         imgs.push(img);
         img.onload = function(){}
         img.src = `img/gameAssets/${imageNames[i]}.png`;
     }
-    console.log("Image loading");
+    console.log("Image loading complete.");
+}
+
+function fillToolbox(){
+    toolboxHtml = "<table id=\"toolboxTable\"><tr>";
+    toolboxWidth = Math.floor($("#toolboxWorkspace").width()/toolboxItemSize);
+    console.log(toolboxWidth);
+    for (var i=0; i<imageNames.length; i++){
+        if (i % toolboxWidth == 0){
+            toolboxHtml += "</tr><tr>";
+        }
+        toolboxHtml += `<td><img src="img/gameAssets/${imageNames[i]}.png" height=${toolboxItemSize} width=${toolboxItemSize}></td>`;
+    };
+    toolboxHtml += "</tr></table>";
+    $("#toolboxWorkspace").html(toolboxHtml);
 }
 
 function drawGrid(){
@@ -101,4 +119,14 @@ function twoDimensionalArray(rows, columns) {
     }
   
     return arr;
+  }
+
+  function toggleToolbox(){
+      if (toolboxShowing==true){
+          $("#toolbox").fadeOut(200);
+          toolboxShowing = false;
+      }else{
+        $("#toolbox").fadeIn(200);
+        toolboxShowing = true;
+      }
   }
